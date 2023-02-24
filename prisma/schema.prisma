@@ -1,0 +1,32 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "mysql"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["extendedWhereUnique"]
+}
+
+model Conference {
+  id            Int      @id @default(autoincrement())
+  studentNumber String   @db.VarChar(255)
+  homeRoomName  String   @db.VarChar(255)
+  nouns         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deleted       Boolean  @default(false)
+
+  @@map("conferences")
+}
+
+model Noun {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(255)
+  imgSrc    String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@map("nouns")
+}
