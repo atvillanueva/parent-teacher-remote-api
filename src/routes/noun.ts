@@ -30,7 +30,7 @@ router.post(
     try {
       const body = req.body;
       const file = req.file as Express.Multer.File;
-      const imgSrc = file.path;
+      const imgSrc = path.normalize(path.join(file.path));
 
       const noun = await prisma.noun.create({
         data: {

@@ -1,9 +1,11 @@
 -- CreateTable
 CREATE TABLE `conferences` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `studentNumber` VARCHAR(191) NOT NULL,
-    `homeRoomName` VARCHAR(191) NOT NULL,
+    `studentNumber` VARCHAR(255) NOT NULL,
+    `homeRoomName` VARCHAR(255) NOT NULL,
     `nouns` VARCHAR(191) NOT NULL,
+    `startDate` DATETIME(3) NOT NULL,
+    `endDate` DATETIME(3) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deleted` BOOLEAN NOT NULL DEFAULT false,

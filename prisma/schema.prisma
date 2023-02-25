@@ -13,6 +13,8 @@ model Conference {
   studentNumber String   @db.VarChar(255)
   homeRoomName  String   @db.VarChar(255)
   nouns         String
+  startDate     DateTime
+  endDate       DateTime
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   deleted       Boolean  @default(false)
