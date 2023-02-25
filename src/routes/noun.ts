@@ -4,7 +4,7 @@ import { validateRequest } from "zod-express-middleware";
 
 import prisma from "@/prisma/prisma-client";
 import upload, { UploadOptions } from "@/utils/upload";
-import { createNoun } from "@/src/schema/noun";
+import { createNoun, updateNoun } from "@/src/schema/noun";
 
 const router = Router();
 
@@ -30,9 +30,37 @@ router.post(
     try {
       const body = req.body;
       const file = req.file as Express.Multer.File;
-      const imgSrc = path.normalize(path.join(file.path));
+      const imgSrc = file.path.replace(/\\/g, "/");
 
       const noun = await prisma.noun.create({
+        data: {
+          ...body,
+          imgSrc,
+        },
+      });
+
+      res.json(noun);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.put(
+  "/nouns/:id",
+  upload(uploadOptions).single("image"),
+  validateRequest(updateNoun),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const file = req.file as Express.Multer.File;
+      const imgSrc = file.path.replace(/\\/g, "/");
+
+      const noun = await prisma.noun.update({
+        where: {
+          id: Number(id),
+        },
         data: {
           ...body,
           imgSrc,

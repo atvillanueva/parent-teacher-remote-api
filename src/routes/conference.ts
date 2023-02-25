@@ -34,7 +34,10 @@ router.post(
         return res.status(400).json({ message: "Invalid student number" });
       }
 
-      if (conference && conference.nouns !== nounIds.join(", ")) {
+      if (
+        conference &&
+        conference.nouns.split(", ").sort().join("") !== nounIds.sort().join("")
+      ) {
         return res
           .status(400)
           .json({ message: "Incorrect associated pictures" });
@@ -42,16 +45,24 @@ router.post(
 
       if (
         conference &&
-        now.isBefore(moment(conference.startDate).subtract(10, "minutes"))
+        now.isBefore(
+          moment(
+            moment(conference.startDate).format("YYYY-MM-DD HH:mm:ss")
+          ).subtract(10, "minutes")
+        )
       ) {
         return res
           .status(400)
-          .json({ message: "sign-in attempt 5 minutes after the start time" });
+          .json({ message: "sign-in attempt 10 minutes before start time" });
       }
 
       if (
         conference &&
-        now.isAfter(moment(conference.endDate).add(5, "minutes"))
+        now.isAfter(
+          moment(
+            moment(conference.startDate).format("YYYY-MM-DD HH:mm:ss")
+          ).add(5, "minutes")
+        )
       ) {
         return res
           .status(400)
@@ -102,8 +113,8 @@ router.post(
           },
           data: {
             nouns: nouns.map((noun) => noun.id).join(", "),
-            startDate,
-            endDate,
+            startDate: moment(startDate).toDate(),
+            endDate: moment(endDate).toDate(),
           },
         });
 
@@ -114,8 +125,8 @@ router.post(
             studentNumber,
             homeRoomName,
             nouns: nouns.map((noun) => noun.id).join(", "),
-            startDate,
-            endDate,
+            startDate: moment(startDate).toDate(),
+            endDate: moment(endDate).toDate(),
           },
         });
 

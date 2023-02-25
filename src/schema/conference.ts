@@ -5,8 +5,8 @@ export const createConference = {
     studentNumber: z.string().min(1),
     homeRoomName: z.string().min(1),
     nounIds: z.array(z.number()).min(2),
-    startDate: z.date(),
-    endDate: z.date(),
+    startDate: z.string().min(1),
+    endDate: z.string().min(1),
   }),
 };
 
