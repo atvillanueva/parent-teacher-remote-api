@@ -13,7 +13,7 @@ router.post(
   validateRequest(verifyConference),
   async (req, res, next) => {
     try {
-      const { studentNumber, homeRoomName, nounIds } = req.body;
+      const { studentNumber, homeRoomName, nouns } = req.body;
       const now = mtz.tz("Asia/Manila");
 
       const conferences = await prisma.conference.findMany({
@@ -36,7 +36,7 @@ router.post(
 
       if (
         conference &&
-        conference.nouns.split(", ").sort().join("") !== nounIds.sort().join("")
+        conference.nouns.split(", ").sort().join("") !== nouns.sort().join("")
       ) {
         return res
           .status(400)
@@ -81,16 +81,16 @@ router.post(
   validateRequest(createConference),
   async (req, res, next) => {
     try {
-      const { studentNumber, homeRoomName, nounIds, startDate, endDate } =
+      const { studentNumber, homeRoomName, nouns, startDate, endDate } =
         req.body;
 
-      const nouns = await prisma.noun.findMany({
+      const currentNouns = await prisma.noun.findMany({
         select: {
-          id: true,
+          name: true,
         },
         where: {
-          id: {
-            in: nounIds,
+          name: {
+            in: nouns,
           },
         },
       });
@@ -102,7 +102,7 @@ router.post(
         },
       });
 
-      if (nouns.length !== nounIds.length) {
+      if (currentNouns.length !== nouns.length) {
         return res.status(400).json({ message: "Some noun id doesn't exist" });
       }
 
@@ -112,7 +112,7 @@ router.post(
             id: conference.id,
           },
           data: {
-            nouns: nouns.map((noun) => noun.id).join(", "),
+            nouns: currentNouns.map((noun) => noun.name).join(", "),
             startDate: moment(startDate).toDate(),
             endDate: moment(endDate).toDate(),
           },
@@ -124,7 +124,7 @@ router.post(
           data: {
             studentNumber,
             homeRoomName,
-            nouns: nouns.map((noun) => noun.id).join(", "),
+            nouns: currentNouns.map((noun) => noun.name).join(", "),
             startDate: moment(startDate).toDate(),
             endDate: moment(endDate).toDate(),
           },
